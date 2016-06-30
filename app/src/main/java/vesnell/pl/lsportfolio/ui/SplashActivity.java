@@ -1,4 +1,4 @@
-package vesnell.pl.lsportfolio;
+package vesnell.pl.lsportfolio.ui;
 
 import android.content.Intent;
 import android.os.Bundle;

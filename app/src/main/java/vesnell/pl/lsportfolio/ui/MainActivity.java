@@ -1,4 +1,4 @@
-package vesnell.pl.lsportfolio;
+package vesnell.pl.lsportfolio.ui;
 
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -15,6 +15,8 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import vesnell.pl.lsportfolio.R;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
