@@ -11,19 +11,22 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     private DrawerLayout drawer;
+    private TextView toolbarTitle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbarTitle = (TextView) toolbar.findViewById(R.id.toolbar_title);
         setSupportActionBar(toolbar);
-        setTitle(getString(R.string.menu_apps));
+        toolbarTitle.setText(getString(R.string.menu_apps));
 
         Drawable drawable = ResourcesCompat.getDrawable(getResources(), R.drawable.menu_icon, null);
 
@@ -76,10 +79,10 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void setViewApps() {
-        setTitle(getString(R.string.menu_apps));
+        toolbarTitle.setText(getString(R.string.menu_apps));
     }
 
     private void setViewContact() {
-        setTitle(getString(R.string.menu_contact));
+        toolbarTitle.setText(getString(R.string.menu_contact));
     }
 }
