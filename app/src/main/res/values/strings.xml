@@ -6,4 +6,6 @@
 
     <string name="menu_apps">Aplikacje</string>
     <string name="menu_contact">Kontakt</string>
+    <string name="error_download_data">Nie udało się pobrać danych</string>
+    <string name="empty_projects">Brak projektów</string>
 </resources>
