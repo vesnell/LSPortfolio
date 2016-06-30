@@ -31,7 +31,6 @@ public class MainActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbarTitle = (TextView) toolbar.findViewById(R.id.toolbar_title);
         setSupportActionBar(toolbar);
-        toolbarTitle.setText(getString(R.string.menu_apps));
 
         fragContainer = (FrameLayout) findViewById(R.id.flFragmentContainer);
         ll = new LinearLayout(this);
@@ -60,6 +59,8 @@ public class MainActivity extends AppCompatActivity
                 }
             }
         });
+
+        setViewApps();
     }
 
     @Override
