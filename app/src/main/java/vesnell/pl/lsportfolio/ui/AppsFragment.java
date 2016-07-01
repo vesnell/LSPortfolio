@@ -1,5 +1,6 @@
 package vesnell.pl.lsportfolio.ui;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -30,6 +31,7 @@ public class AppsFragment extends Fragment implements DownloadResultReceiver.Rec
     private ListViewAdapter adapter;
     private DownloadResultReceiver mReceiver;
     private RunServiceType runServiceType;
+    private ProgressDialog progressDialog;
     private SwipeRefreshLayout swipeRefreshLayout;
     private List<Project> projects;
 
@@ -44,6 +46,7 @@ public class AppsFragment extends Fragment implements DownloadResultReceiver.Rec
 
         final String projectsUrl = getString(R.string.projects_url);
 
+        progressDialog = new ProgressDialog(getContext());
         listView = (ListView) v.findViewById(R.id.listView);
         swipeRefreshLayout = (SwipeRefreshLayout) v.findViewById(R.id.swipeContainer);
         TextView emptyView = (TextView) v.findViewById(R.id.tvEmpty);
@@ -98,7 +101,7 @@ public class AppsFragment extends Fragment implements DownloadResultReceiver.Rec
     public void onReceiveResult(int resultCode, Bundle resultData) {
         switch (resultCode) {
             case DownloadAppsService.STATUS_RUNNING:
-                //setEnabledDownloadAction(true);
+                setEnabledDownloadAction(true);
                 break;
             case DownloadAppsService.STATUS_ERROR:
                 String error = resultData.getString(Intent.EXTRA_TEXT);
@@ -106,12 +109,27 @@ public class AppsFragment extends Fragment implements DownloadResultReceiver.Rec
             case DownloadAppsService.STATUS_FINISHED:
                 List<Project> projects = (List<Project>) resultData.getSerializable(DownloadAppsService.RESULT);
                 if (projects != null && projects.size() > 0) {
-
+                    adapter.setProjects(projects);
+                    listView.invalidateViews();
                 } else {
 
                 }
-                //setEnabledDownloadAction(false);
+                setEnabledDownloadAction(false);
                 break;
+        }
+    }
+
+    private void setEnabledDownloadAction(boolean isEnabled) {
+        if (isEnabled) {
+            if (!swipeRefreshLayout.isRefreshing()) {
+                progressDialog.show();
+            }
+        } else {
+            if (swipeRefreshLayout.isRefreshing()) {
+                swipeRefreshLayout.setRefreshing(false);
+            } else {
+                progressDialog.cancel();
+            }
         }
     }
 
