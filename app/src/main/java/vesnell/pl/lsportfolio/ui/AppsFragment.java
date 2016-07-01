@@ -108,7 +108,7 @@ public class AppsFragment extends Fragment implements DownloadResultReceiver.Rec
                 break;
             case DownloadAppsService.STATUS_ERROR:
                 String error = resultData.getString(Intent.EXTRA_TEXT);
-                Toast.makeText(getContext(), error, Toast.LENGTH_LONG).show();
+                //Toast.makeText(getContext(), error, Toast.LENGTH_LONG).show();
             case DownloadAppsService.STATUS_FINISHED:
                 List<Project> projects = (List<Project>) resultData.getSerializable(DownloadAppsService.RESULT);
                 if (projects != null && projects.size() > 0) {
@@ -139,14 +139,16 @@ public class AppsFragment extends Fragment implements DownloadResultReceiver.Rec
 
     private void setEnabledDownloadAction(boolean isEnabled) {
         if (isEnabled) {
-            if (!swipeRefreshLayout.isRefreshing()) {
+            if (!swipeRefreshLayout.isRefreshing() && progressDialog != null) {
                 progressDialog.show();
             }
         } else {
             if (swipeRefreshLayout.isRefreshing()) {
                 swipeRefreshLayout.setRefreshing(false);
             } else {
-                progressDialog.cancel();
+                if (progressDialog != null) {
+                    progressDialog.cancel();
+                }
             }
         }
     }
@@ -166,5 +168,15 @@ public class AppsFragment extends Fragment implements DownloadResultReceiver.Rec
         REFRESH,
         EXPAND,
         BACK_FROM_DETAILS;
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+
+        if ((progressDialog != null) && progressDialog.isShowing()) {
+            progressDialog.dismiss();
+        }
+        progressDialog = null;
     }
 }
