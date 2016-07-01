@@ -1,6 +1,78 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center_horizontal">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_marginTop="@dimen/details_vertical_margin">
+
+        <ImageView
+            android:id="@+id/icon"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"/>
+
+        <TextView
+            android:id="@+id/name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:gravity="center_horizontal"
+            android:textStyle="bold"
+            android:textSize="@dimen/details_name_textsize"
+            android:layout_marginRight="@dimen/list_item_width"/>
+
+    </LinearLayout>
+
+    <include layout="@layout/separator"/>
+
+    <TextView
+        android:id="@+id/description"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/details_vertical_margin"
+        android:layout_marginRight="@dimen/details_horizontal_margin"
+        android:layout_marginLeft="@dimen/details_horizontal_margin"/>
+
+    <HorizontalScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+        <LinearLayout
+            android:id="@+id/gallery"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"/>
+    </HorizontalScrollView>
+
+    <include layout="@layout/separator"/>
+
+    <ImageButton
+        android:id="@+id/store_ios"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@null"
+        android:src="@drawable/app_store_badge"
+        android:layout_marginBottom="@dimen/details_vertical_margin"/>
+
+    <ImageButton
+        android:id="@+id/store_android"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@null"
+        android:src="@drawable/google_play_badge"
+        android:layout_marginBottom="@dimen/details_vertical_margin"/>
+
+    <ImageButton
+        android:id="@+id/store_windows"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@null"
+        android:src="@drawable/win_store_badge"/>
 
 </LinearLayout>

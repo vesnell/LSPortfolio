@@ -12,4 +12,8 @@
 
     <dimen name="list_item_width">64dp</dimen>
     <dimen name="list_item_height">64dp</dimen>
+
+    <dimen name="details_vertical_margin">8dp</dimen>
+    <dimen name="details_name_textsize">16sp</dimen>
+    <dimen name="details_horizontal_margin">8dp</dimen>
 </resources>
