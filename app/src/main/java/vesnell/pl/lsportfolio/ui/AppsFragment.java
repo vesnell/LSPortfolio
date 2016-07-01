@@ -10,7 +10,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -28,7 +27,6 @@ public class AppsFragment extends Fragment implements DownloadResultReceiver.Rec
         ProjectController.ProjectsListSaveCallback {
 
     public static final String TAG = "AppsFragment";
-    private static final int REQ_DETAILS = 1;
 
     private ListView listView;
     private ListViewAdapter adapter;
@@ -66,10 +64,9 @@ public class AppsFragment extends Fragment implements DownloadResultReceiver.Rec
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 if (projects != null) {
                     Project project = projects.get(position);
-                    //Intent i = new Intent(getActivity(), Details.class);
-
-                    //i.putExtra(Project.NAME, project);
-                    //startActivityForResult(i, REQ_DETAILS);
+                    Intent i = new Intent(getActivity(), DetailsActivity.class);
+                    i.putExtra(Project.NAME, project);
+                    startActivity(i);
                 }
             }
         });

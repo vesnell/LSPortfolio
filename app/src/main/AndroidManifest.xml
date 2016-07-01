@@ -26,6 +26,14 @@
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
 
+        <activity
+            android:name=".ui.DetailsActivity"
+            android:label="@string/details_activity_name">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".ui.MainActivity" />
+        </activity>
+
         <service
             android:name=".service.DownloadAppsService"
             android:exported="false" />
