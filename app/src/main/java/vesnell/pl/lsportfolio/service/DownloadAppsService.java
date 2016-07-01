@@ -106,15 +106,15 @@ public class DownloadAppsService extends IntentService {
 
             switch (downloadType) {
                 case APPS:
-                    String quizMD5 = sharedpreferences.getString(MD5_APPS_PREFERENCES, null);
-                    String md5FromResponse = getMD5(response);
-                    if (!md5FromResponse.equals(quizMD5)) {
-                        SharedPreferences.Editor editor = sharedpreferences.edit();
-                        editor.putString(MD5_APPS_PREFERENCES, md5FromResponse);
-                        editor.apply();
+                    //String appsMD5 = sharedpreferences.getString(MD5_APPS_PREFERENCES, null);
+                    //String md5FromResponse = getMD5(response);
+                    //if (!md5FromResponse.equals(appsMD5)) {
+                        //SharedPreferences.Editor editor = sharedpreferences.edit();
+                        //editor.putString(MD5_APPS_PREFERENCES, md5FromResponse);
+                        //editor.apply();
                         return parseResult(response, downloadType);
-                    }
-                    break;
+                    //}
+                    //break;
                 case DETAILS:
                     return parseResult(response, downloadType);
             }
@@ -127,7 +127,7 @@ public class DownloadAppsService extends IntentService {
     private Object parseResult(String result, DownloadType downloadType) {
         switch (downloadType) {
             case APPS:
-                ArrayList<Project> quizzes = new ArrayList<Project>();
+                ArrayList<Project> projects = new ArrayList<Project>();
                 try {
                     JSONObject response = new JSONObject(result);
                     JSONObject data = response.optJSONObject(JsonTags.DATA);
@@ -135,14 +135,14 @@ public class DownloadAppsService extends IntentService {
 
                     for (int i = 0; i < items.length(); i++) {
                         JSONObject item = items.optJSONObject(i);
-                        Project quiz = new Project(item);
-                        quizzes.add(quiz);
+                        Project project = new Project(item);
+                        projects.add(project);
                     }
 
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-                return quizzes;
+                return projects;
             case DETAILS:
 
                 return null;

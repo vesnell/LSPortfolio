@@ -9,4 +9,7 @@
 
     <dimen name="menu_padding">12dp</dimen>
     <dimen name="menu_text_size">16sp</dimen>
+
+    <dimen name="list_item_width">64dp</dimen>
+    <dimen name="list_item_height">64dp</dimen>
 </resources>
