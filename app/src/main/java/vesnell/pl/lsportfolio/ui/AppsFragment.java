@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,11 +19,13 @@ import android.widget.Toast;
 import java.util.List;
 
 import vesnell.pl.lsportfolio.R;
+import vesnell.pl.lsportfolio.database.controller.ProjectController;
 import vesnell.pl.lsportfolio.database.model.Project;
 import vesnell.pl.lsportfolio.service.DownloadAppsService;
 import vesnell.pl.lsportfolio.service.DownloadResultReceiver;
 
-public class AppsFragment extends Fragment implements DownloadResultReceiver.Receiver {
+public class AppsFragment extends Fragment implements DownloadResultReceiver.Receiver,
+        ProjectController.ProjectsListSaveCallback {
 
     public static final String TAG = "AppsFragment";
     private static final int REQ_DETAILS = 1;
@@ -34,6 +37,7 @@ public class AppsFragment extends Fragment implements DownloadResultReceiver.Rec
     private ProgressDialog progressDialog;
     private SwipeRefreshLayout swipeRefreshLayout;
     private List<Project> projects;
+    private ProjectController projectController;
 
     public static AppsFragment newInstance() {
         AppsFragment f = new AppsFragment();
@@ -44,6 +48,8 @@ public class AppsFragment extends Fragment implements DownloadResultReceiver.Rec
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v =  inflater.inflate(R.layout.apps_fragment, container, false);
 
+        projectController = new ProjectController(getContext());
+        projectController.setProjectsListSaveCallback(this);
         final String projectsUrl = getString(R.string.projects_url);
 
         progressDialog = new ProgressDialog(getContext());
@@ -109,14 +115,29 @@ public class AppsFragment extends Fragment implements DownloadResultReceiver.Rec
             case DownloadAppsService.STATUS_FINISHED:
                 List<Project> projects = (List<Project>) resultData.getSerializable(DownloadAppsService.RESULT);
                 if (projects != null && projects.size() > 0) {
-                    adapter.setProjects(projects);
-                    listView.invalidateViews();
+                    projectController.saveProjectsList(projects);
                 } else {
-
+                    showProjectList();
                 }
                 setEnabledDownloadAction(false);
                 break;
         }
+    }
+
+    private void showProjectList() {
+        projectController.setProjectsListLoadCallback(new ProjectController.ProjectsListLoadCallback() {
+            @Override
+            public void onProjectsListLoaded(List<Project> projects) {
+                AppsFragment.this.projects = projects;
+                adapter.setProjects(projects);
+                listView.invalidateViews();
+
+                if (runServiceType == RunServiceType.REFRESH) {
+                    listView.setSelection(0);
+                }
+            }
+        });
+        projectController.requestList();
     }
 
     private void setEnabledDownloadAction(boolean isEnabled) {
@@ -130,6 +151,16 @@ public class AppsFragment extends Fragment implements DownloadResultReceiver.Rec
             } else {
                 progressDialog.cancel();
             }
+        }
+    }
+
+    @Override
+    public void onProjectsListSaved(boolean result) {
+        if (result) {
+            showProjectList();
+        } else {
+            Log.w(TAG, "error: write to db");
+            Toast.makeText(getContext(), R.string.error_write_to_db, Toast.LENGTH_LONG).show();
         }
     }
 

@@ -8,4 +8,5 @@
     <string name="menu_contact">Kontakt</string>
     <string name="error_download_data">Nie udało się pobrać danych</string>
     <string name="empty_projects">Brak projektów</string>
+    <string name="error_write_to_db">Wystąpił problem z zapisem do bazy danych</string>
 </resources>

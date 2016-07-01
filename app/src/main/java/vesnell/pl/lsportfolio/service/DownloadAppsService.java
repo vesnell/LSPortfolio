@@ -106,15 +106,15 @@ public class DownloadAppsService extends IntentService {
 
             switch (downloadType) {
                 case APPS:
-                    //String appsMD5 = sharedpreferences.getString(MD5_APPS_PREFERENCES, null);
-                    //String md5FromResponse = getMD5(response);
-                    //if (!md5FromResponse.equals(appsMD5)) {
-                        //SharedPreferences.Editor editor = sharedpreferences.edit();
-                        //editor.putString(MD5_APPS_PREFERENCES, md5FromResponse);
-                        //editor.apply();
+                    String appsMD5 = sharedpreferences.getString(MD5_APPS_PREFERENCES, null);
+                    String md5FromResponse = getMD5(response);
+                    if (!md5FromResponse.equals(appsMD5)) {
+                        SharedPreferences.Editor editor = sharedpreferences.edit();
+                        editor.putString(MD5_APPS_PREFERENCES, md5FromResponse);
+                        editor.apply();
                         return parseResult(response, downloadType);
-                    //}
-                    //break;
+                    }
+                    break;
                 case DETAILS:
                     return parseResult(response, downloadType);
             }
