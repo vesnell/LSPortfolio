@@ -1,6 +1,7 @@
 package vesnell.pl.lsportfolio.ui;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -36,6 +37,7 @@ public class AppsFragment extends Fragment implements DownloadResultReceiver.Rec
     private SwipeRefreshLayout swipeRefreshLayout;
     private List<Project> projects;
     private ProjectController projectController;
+    private Context context;
 
     public static AppsFragment newInstance() {
         AppsFragment f = new AppsFragment();
@@ -45,6 +47,7 @@ public class AppsFragment extends Fragment implements DownloadResultReceiver.Rec
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v =  inflater.inflate(R.layout.apps_fragment, container, false);
+        context = container.getContext();
 
         projectController = new ProjectController(getContext());
         projectController.setProjectsListSaveCallback(this);
@@ -108,7 +111,7 @@ public class AppsFragment extends Fragment implements DownloadResultReceiver.Rec
                 break;
             case DownloadAppsService.STATUS_ERROR:
                 String error = resultData.getString(Intent.EXTRA_TEXT);
-                //Toast.makeText(getContext(), error, Toast.LENGTH_LONG).show();
+                Toast.makeText(context, error, Toast.LENGTH_LONG).show();
             case DownloadAppsService.STATUS_FINISHED:
                 List<Project> projects = (List<Project>) resultData.getSerializable(DownloadAppsService.RESULT);
                 if (projects != null && projects.size() > 0) {
