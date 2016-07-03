@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import vesnell.pl.lsportfolio.R;
-import vesnell.pl.lsportfolio.database.model.Project;
+import vesnell.pl.lsportfolio.model.Project;
 
 public class ListViewAdapter extends BaseAdapter {
 

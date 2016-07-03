@@ -8,7 +8,6 @@ import android.os.Handler;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -19,18 +18,13 @@ import com.squareup.picasso.Picasso;
 import java.util.List;
 
 import vesnell.pl.lsportfolio.R;
-import vesnell.pl.lsportfolio.database.controller.ImageController;
-import vesnell.pl.lsportfolio.database.controller.ProjectDetailsController;
-import vesnell.pl.lsportfolio.database.controller.StoreController;
-import vesnell.pl.lsportfolio.database.model.Project;
-import vesnell.pl.lsportfolio.database.model.ProjectDetails;
-import vesnell.pl.lsportfolio.database.model.Store;
+import vesnell.pl.lsportfolio.model.Project;
+import vesnell.pl.lsportfolio.model.ProjectDetails;
+import vesnell.pl.lsportfolio.model.Store;
 import vesnell.pl.lsportfolio.service.DownloadService;
 import vesnell.pl.lsportfolio.service.DownloadResultReceiver;
 
-
-public class DetailsActivity extends AppCompatActivity implements DownloadResultReceiver.Receiver,
-    ProjectDetailsController.ProjectDetailsSaveCallback {
+public class DetailsActivity extends AppCompatActivity implements DownloadResultReceiver.Receiver {
 
     private TextView tvName;
     private TextView tvDescription;
@@ -41,20 +35,12 @@ public class DetailsActivity extends AppCompatActivity implements DownloadResult
 
     private DownloadResultReceiver mReceiver;
     private ProgressDialog progressDialog;
-    private ProjectDetailsController projectDetailsController;
-    private StoreController storeController;
-    private ImageController imageController;
     private List<Store> stores;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_details);
-
-        projectDetailsController = new ProjectDetailsController(this);
-        projectDetailsController.setProjectDetailsSaveCallback(this);
-        storeController = new StoreController(this);
-        imageController = new ImageController(this);
 
         Bundle b = getIntent().getExtras();
         Project project = (Project) b.getSerializable(Project.NAME);
@@ -104,7 +90,7 @@ public class DetailsActivity extends AppCompatActivity implements DownloadResult
             case DownloadService.STATUS_FINISHED:
                 ProjectDetails projectDetails = (ProjectDetails) resultData.getSerializable(DownloadService.RESULT);
                 if (projectDetails != null) {
-                    projectDetailsController.save(projectDetails);
+                    setProjectDetailsContent(projectDetails);
                 } else {
                     String projectDetailsNull = getString(R.string.project_details_null);
                     Toast.makeText(this, projectDetailsNull, Toast.LENGTH_LONG).show();
@@ -121,35 +107,6 @@ public class DetailsActivity extends AppCompatActivity implements DownloadResult
             if (progressDialog != null) {
                 progressDialog.cancel();
             }
-        }
-    }
-
-    @Override
-    public void onProjectDetailsSaved(boolean result, final ProjectDetails projectDetails) {
-        if (result) {
-            storeController.setStoresListSaveCallback(new StoreController.StoresListSaveCallback() {
-                @Override
-                public void onStoresListSaved(boolean result) {
-                    if (result) {
-                        imageController.setImagesListSaveCallback(new ImageController.ImagesListSaveCallback() {
-                            @Override
-                            public void onImagesListSaved(boolean result) {
-                                if (result) {
-                                    setProjectDetailsContent(projectDetails);
-                                } else {
-                                    Toast.makeText(DetailsActivity.this, "Error: could not save images list", Toast.LENGTH_LONG).show();
-                                }
-                            }
-                        });
-                        imageController.saveImagesList(projectDetails.getTempImages());
-                    } else {
-                        Toast.makeText(DetailsActivity.this, "Error: could not save stores list", Toast.LENGTH_LONG).show();
-                    }
-                }
-            });
-            storeController.saveStoresList(projectDetails.getTempStores());
-        } else {
-            Toast.makeText(this, "Error: could not save projectDetails", Toast.LENGTH_LONG).show();
         }
     }
 

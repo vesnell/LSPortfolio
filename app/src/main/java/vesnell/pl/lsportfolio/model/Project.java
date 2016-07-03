@@ -1,7 +1,4 @@
-package vesnell.pl.lsportfolio.database.model;
-
-import com.j256.ormlite.field.DatabaseField;
-import com.j256.ormlite.table.DatabaseTable;
+package vesnell.pl.lsportfolio.model;
 
 import org.json.JSONObject;
 
@@ -9,27 +6,17 @@ import java.io.Serializable;
 
 import vesnell.pl.lsportfolio.json.JsonTags;
 
-@DatabaseTable(tableName="Project")
 public class Project implements Serializable, Comparable<Project> {
 
     private static final String TAG = "Project";
 
     public static final String NAME = "project";
 
-    @DatabaseField(id = true)
     private String id;
-    @DatabaseField
     private String name;
-    @DatabaseField
     private String icon;
-    @DatabaseField
     private String description;
-    @DatabaseField(foreign = true, foreignAutoCreate = true, foreignAutoRefresh = true)
-    private ProjectDetails projectDetails;
-
-    //for OrmLite
-    public Project() {
-    }
+    private String detailsSum;
 
     public Project(JSONObject item) {
         String name = item.optString(JsonTags.NAME);
@@ -40,6 +27,14 @@ public class Project implements Serializable, Comparable<Project> {
         this.id = id;
         this.icon = icon;
         this.description = description;
+    }
+
+    public String getDetailsSum() {
+        return detailsSum;
+    }
+
+    public void setDetailsSum(String detailsSum) {
+        this.detailsSum = detailsSum;
     }
 
     public String getId() {
@@ -72,10 +67,6 @@ public class Project implements Serializable, Comparable<Project> {
 
     public void setDescription(String description) {
         this.description = description;
-    }
-
-    public ProjectDetails getProjectDetails() {
-        return projectDetails;
     }
 
     @Override

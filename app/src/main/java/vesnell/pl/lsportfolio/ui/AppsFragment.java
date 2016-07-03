@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,14 +18,12 @@ import android.widget.Toast;
 import java.util.List;
 
 import vesnell.pl.lsportfolio.R;
-import vesnell.pl.lsportfolio.database.controller.ProjectController;
-import vesnell.pl.lsportfolio.database.model.Project;
+import vesnell.pl.lsportfolio.model.Project;
 import vesnell.pl.lsportfolio.service.DownloadService;
 import vesnell.pl.lsportfolio.service.DownloadResultReceiver;
 import vesnell.pl.lsportfolio.service.RunServiceType;
 
-public class AppsFragment extends Fragment implements DownloadResultReceiver.Receiver,
-        ProjectController.ProjectsListSaveCallback {
+public class AppsFragment extends Fragment implements DownloadResultReceiver.Receiver {
 
     public static final String TAG = "AppsFragment";
 
@@ -37,7 +34,6 @@ public class AppsFragment extends Fragment implements DownloadResultReceiver.Rec
     private ProgressDialog progressDialog;
     private SwipeRefreshLayout swipeRefreshLayout;
     private List<Project> projects;
-    private ProjectController projectController;
     private Context context;
 
     public static AppsFragment newInstance() {
@@ -50,8 +46,6 @@ public class AppsFragment extends Fragment implements DownloadResultReceiver.Rec
         View v =  inflater.inflate(R.layout.apps_fragment, container, false);
         context = container.getContext();
 
-        projectController = new ProjectController(getContext());
-        projectController.setProjectsListSaveCallback(this);
         final String projectsUrl = getString(R.string.projects_url);
 
         progressDialog = new ProgressDialog(getContext());
@@ -114,10 +108,8 @@ public class AppsFragment extends Fragment implements DownloadResultReceiver.Rec
                 String error = resultData.getString(Intent.EXTRA_TEXT);
                 Toast.makeText(context, error, Toast.LENGTH_LONG).show();
             case DownloadService.STATUS_FINISHED:
-                List<Project> projects = (List<Project>) resultData.getSerializable(DownloadService.RESULT);
+                projects = (List<Project>) resultData.getSerializable(DownloadService.RESULT);
                 if (projects != null && projects.size() > 0) {
-                    projectController.saveProjectsList(projects);
-                } else {
                     showProjectList();
                 }
                 setEnabledDownloadAction(false);
@@ -126,19 +118,11 @@ public class AppsFragment extends Fragment implements DownloadResultReceiver.Rec
     }
 
     private void showProjectList() {
-        projectController.setProjectsListLoadCallback(new ProjectController.ProjectsListLoadCallback() {
-            @Override
-            public void onProjectsListLoaded(List<Project> projects) {
-                AppsFragment.this.projects = projects;
-                adapter.setProjects(projects);
-                listView.invalidateViews();
-
-                if (runServiceType == RunServiceType.REFRESH) {
-                    listView.setSelection(0);
-                }
-            }
-        });
-        projectController.requestList();
+        adapter.setProjects(projects);
+        listView.invalidateViews();
+        if (runServiceType == RunServiceType.REFRESH) {
+            listView.setSelection(0);
+        }
     }
 
     private void setEnabledDownloadAction(boolean isEnabled) {
@@ -158,19 +142,8 @@ public class AppsFragment extends Fragment implements DownloadResultReceiver.Rec
     }
 
     @Override
-    public void onProjectsListSaved(boolean result) {
-        if (result) {
-            showProjectList();
-        } else {
-            Log.w(TAG, "error: write to db");
-            Toast.makeText(getContext(), R.string.error_write_to_db, Toast.LENGTH_LONG).show();
-        }
-    }
-
-    @Override
     public void onPause() {
         super.onPause();
-
         if ((progressDialog != null) && progressDialog.isShowing()) {
             progressDialog.dismiss();
         }
