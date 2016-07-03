@@ -56,28 +56,28 @@
 
     <include layout="@layout/separator"/>
 
-    <ImageButton
-        android:id="@+id/store_ios"
+    <ImageView
+        android:id="@+id/store1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@null"
-        android:src="@drawable/app_store_badge"
+        android:clickable="true"
+        android:onClick="onStoreClick"
         android:layout_marginBottom="@dimen/details_vertical_margin"/>
 
-    <ImageButton
-        android:id="@+id/store_android"
+    <ImageView
+        android:id="@+id/store2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@null"
-        android:src="@drawable/google_play_badge"
+        android:clickable="true"
+        android:onClick="onStoreClick"
         android:layout_marginBottom="@dimen/details_vertical_margin"/>
 
-    <ImageButton
-        android:id="@+id/store_windows"
+    <ImageView
+        android:id="@+id/store3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@null"
-        android:src="@drawable/win_store_badge"/>
+        android:clickable="true"
+        android:onClick="onStoreClick"/>
 
 </LinearLayout>
 </ScrollView>

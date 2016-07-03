@@ -21,7 +21,7 @@ import java.util.List;
 import vesnell.pl.lsportfolio.R;
 import vesnell.pl.lsportfolio.database.controller.ProjectController;
 import vesnell.pl.lsportfolio.database.model.Project;
-import vesnell.pl.lsportfolio.service.DownloadAppsService;
+import vesnell.pl.lsportfolio.service.DownloadService;
 import vesnell.pl.lsportfolio.service.DownloadResultReceiver;
 import vesnell.pl.lsportfolio.service.RunServiceType;
 
@@ -97,24 +97,24 @@ public class AppsFragment extends Fragment implements DownloadResultReceiver.Rec
 
     private void startDownloadService(String url) {
         //send extras to download service
-        Intent intent = new Intent(Intent.ACTION_SYNC, null, getContext(), DownloadAppsService.class);
-        intent.putExtra(DownloadAppsService.URL, url);
-        intent.putExtra(DownloadAppsService.RECEIVER, mReceiver);
-        intent.putExtra(DownloadAppsService.DOWNLOAD_TYPE, DownloadAppsService.DownloadType.APPS);
+        Intent intent = new Intent(Intent.ACTION_SYNC, null, getContext(), DownloadService.class);
+        intent.putExtra(DownloadService.URL, url);
+        intent.putExtra(DownloadService.RECEIVER, mReceiver);
+        intent.putExtra(DownloadService.DOWNLOAD_TYPE, DownloadService.DownloadType.APPS);
         getActivity().startService(intent);
     }
 
     @Override
     public void onReceiveResult(int resultCode, Bundle resultData) {
         switch (resultCode) {
-            case DownloadAppsService.STATUS_RUNNING:
+            case DownloadService.STATUS_RUNNING:
                 setEnabledDownloadAction(true);
                 break;
-            case DownloadAppsService.STATUS_ERROR:
+            case DownloadService.STATUS_ERROR:
                 String error = resultData.getString(Intent.EXTRA_TEXT);
                 Toast.makeText(context, error, Toast.LENGTH_LONG).show();
-            case DownloadAppsService.STATUS_FINISHED:
-                List<Project> projects = (List<Project>) resultData.getSerializable(DownloadAppsService.RESULT);
+            case DownloadService.STATUS_FINISHED:
+                List<Project> projects = (List<Project>) resultData.getSerializable(DownloadService.RESULT);
                 if (projects != null && projects.size() > 0) {
                     projectController.saveProjectsList(projects);
                 } else {

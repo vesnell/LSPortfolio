@@ -25,7 +25,7 @@ public class ProjectDetails implements Serializable {
     public static final String NAME = "projectDetails";
 
     @DatabaseField(generatedId = true)
-    private String id;
+    private int id;
     @DatabaseField(foreign = true, foreignAutoCreate = true, foreignAutoRefresh = true, canBeNull = false)
     private Project project;
     @DatabaseField
@@ -48,6 +48,10 @@ public class ProjectDetails implements Serializable {
         this.name = name;
         this.description = description;
         this.project = project;
+    }
+
+    public int getId() {
+        return id;
     }
 
     public Project getProject() {

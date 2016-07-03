@@ -24,6 +24,8 @@ public class Project implements Serializable, Comparable<Project> {
     private String icon;
     @DatabaseField
     private String description;
+    @DatabaseField(foreign = true, foreignAutoCreate = true, foreignAutoRefresh = true)
+    private ProjectDetails projectDetails;
 
     //for OrmLite
     public Project() {
@@ -70,6 +72,10 @@ public class Project implements Serializable, Comparable<Project> {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public ProjectDetails getProjectDetails() {
+        return projectDetails;
     }
 
     @Override

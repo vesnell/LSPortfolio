@@ -32,7 +32,7 @@ import vesnell.pl.lsportfolio.database.model.Store;
 import vesnell.pl.lsportfolio.json.JsonTags;
 import vesnell.pl.lsportfolio.utils.Resources;
 
-public class DownloadAppsService extends IntentService {
+public class DownloadService extends IntentService {
 
     public static final String URL = "url";
     public static final String RECEIVER = "receiver";
@@ -49,8 +49,8 @@ public class DownloadAppsService extends IntentService {
     private SharedPreferences sharedpreferences;
     private Project project;
 
-    public DownloadAppsService() {
-        super(DownloadAppsService.class.getName());
+    public DownloadService() {
+        super(DownloadService.class.getName());
     }
 
     @Override
