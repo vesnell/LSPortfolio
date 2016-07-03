@@ -23,6 +23,7 @@ import vesnell.pl.lsportfolio.database.controller.ProjectController;
 import vesnell.pl.lsportfolio.database.model.Project;
 import vesnell.pl.lsportfolio.service.DownloadAppsService;
 import vesnell.pl.lsportfolio.service.DownloadResultReceiver;
+import vesnell.pl.lsportfolio.service.RunServiceType;
 
 public class AppsFragment extends Fragment implements DownloadResultReceiver.Receiver,
         ProjectController.ProjectsListSaveCallback {
@@ -164,13 +165,6 @@ public class AppsFragment extends Fragment implements DownloadResultReceiver.Rec
             Log.w(TAG, "error: write to db");
             Toast.makeText(getContext(), R.string.error_write_to_db, Toast.LENGTH_LONG).show();
         }
-    }
-
-    public enum RunServiceType {
-        FIRST_RUN,
-        REFRESH,
-        EXPAND,
-        BACK_FROM_DETAILS;
     }
 
     @Override

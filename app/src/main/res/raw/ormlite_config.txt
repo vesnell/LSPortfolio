@@ -1,5 +1,5 @@
 #
-# generated on 2016/06/30 06:15:43
+# generated on 2016/07/03 02:01:31
 #
 # --table-start--
 dataClass=vesnell.pl.lsportfolio.database.model.Project
@@ -18,15 +18,41 @@ fieldName=icon
 # --field-start--
 fieldName=description
 # --field-end--
+# --table-fields-end--
+# --table-end--
+#################################
+# --table-start--
+dataClass=vesnell.pl.lsportfolio.database.model.ProjectDetails
+tableName=ProjectDetails
+# --table-fields-start--
+# --field-start--
+fieldName=id
+generatedId=true
+# --field-end--
+# --field-start--
+fieldName=project
+canBeNull=false
+foreign=true
+foreignAutoRefresh=true
+foreignAutoCreate=true
+# --field-end--
+# --field-start--
+fieldName=name
+# --field-end--
+# --field-start--
+fieldName=description
+# --field-end--
 # --field-start--
 fieldName=images
 foreignCollection=true
 foreignCollectionEager=true
+foreignCollectionForeignFieldName=Image
 # --field-end--
 # --field-start--
 fieldName=stores
 foreignCollection=true
 foreignCollectionEager=true
+foreignCollectionForeignFieldName=Store
 # --field-end--
 # --table-fields-end--
 # --table-end--
@@ -40,7 +66,8 @@ fieldName=id
 generatedId=true
 # --field-end--
 # --field-start--
-fieldName=project
+fieldName=projectDetails
+canBeNull=false
 foreign=true
 foreignAutoRefresh=true
 foreignAutoCreate=true
@@ -60,7 +87,8 @@ fieldName=id
 generatedId=true
 # --field-end--
 # --field-start--
-fieldName=project
+fieldName=projectDetails
+canBeNull=false
 foreign=true
 foreignAutoRefresh=true
 foreignAutoCreate=true

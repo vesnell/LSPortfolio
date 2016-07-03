@@ -22,9 +22,13 @@ import java.net.URL;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.List;
 
 import vesnell.pl.lsportfolio.R;
+import vesnell.pl.lsportfolio.database.model.Image;
 import vesnell.pl.lsportfolio.database.model.Project;
+import vesnell.pl.lsportfolio.database.model.ProjectDetails;
+import vesnell.pl.lsportfolio.database.model.Store;
 import vesnell.pl.lsportfolio.json.JsonTags;
 import vesnell.pl.lsportfolio.utils.Resources;
 
@@ -57,7 +61,9 @@ public class DownloadAppsService extends IntentService {
         final ResultReceiver receiver = intent.getParcelableExtra(RECEIVER);
         DownloadType downloadType = (DownloadType) intent.getSerializableExtra(DOWNLOAD_TYPE);
         String url = intent.getStringExtra(URL);
-
+        if (downloadType == DownloadType.DETAILS) {
+            project = (Project) intent.getSerializableExtra(Project.NAME);
+        }
         Bundle bundle = new Bundle();
 
         if (!TextUtils.isEmpty(url)) {
@@ -74,7 +80,8 @@ public class DownloadAppsService extends IntentService {
                         bundle.putSerializable(RESULT, projects);
                         break;
                     case DETAILS:
-
+                        ProjectDetails projectDetails = (ProjectDetails) results;
+                        bundle.putSerializable(RESULT, projectDetails);
                         break;
                 }
                 receiver.send(STATUS_FINISHED, bundle);
@@ -144,8 +151,31 @@ public class DownloadAppsService extends IntentService {
                 }
                 return projects;
             case DETAILS:
-
-                return null;
+                ProjectDetails projectDetails = null;
+                try {
+                    JSONObject response = new JSONObject(result);
+                    JSONObject data = response.optJSONObject(JsonTags.DATA);
+                    projectDetails = new ProjectDetails(data, project);
+                    JSONArray urls = data.optJSONArray(JsonTags.GALLERY);
+                    List<Image> images = new ArrayList<Image>();
+                    for (int i = 0; i < urls.length(); i++) {
+                        String url = urls.optString(i);
+                        Image image = new Image(url, projectDetails);
+                        images.add(image);
+                    }
+                    JSONArray links = data.optJSONArray(JsonTags.LINK_ARR);
+                    List<Store> stores = new ArrayList<Store>();
+                    for (int i = 0; i < links.length(); i++) {
+                        JSONObject link = links.optJSONObject(i);
+                        Store store = new Store(link, projectDetails);
+                        stores.add(store);
+                    }
+                    projectDetails.setTempImages(images);
+                    projectDetails.setTempStores(stores);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                return projectDetails;
         }
         return null;
     }

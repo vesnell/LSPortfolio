@@ -32,10 +32,13 @@ public class ProjectDetails implements Serializable {
     private String name;
     @DatabaseField
     private String description;
-    @ForeignCollectionField(eager = true)
+    @ForeignCollectionField(eager = true, foreignFieldName = "Image")
     private ForeignCollection<Image> images;
-    @ForeignCollectionField(eager = true)
+    @ForeignCollectionField(eager = true, foreignFieldName = "Store")
     private ForeignCollection<Store> stores;
+
+    private List<Image> tempImages;
+    private List<Store> tempStores;
 
     public ProjectDetails() {}
 
@@ -69,6 +72,22 @@ public class ProjectDetails implements Serializable {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public List<Store> getTempStores() {
+        return tempStores;
+    }
+
+    public void setTempStores(List<Store> tempStores) {
+        this.tempStores = tempStores;
+    }
+
+    public List<Image> getTempImages() {
+        return tempImages;
+    }
+
+    public void setTempImages(List<Image> tempImages) {
+        this.tempImages = tempImages;
     }
 
     public List<Image> getImages() {

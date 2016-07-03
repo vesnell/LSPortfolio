@@ -8,6 +8,7 @@ import java.sql.SQLException;
 
 import vesnell.pl.lsportfolio.database.model.Image;
 import vesnell.pl.lsportfolio.database.model.Project;
+import vesnell.pl.lsportfolio.database.model.ProjectDetails;
 import vesnell.pl.lsportfolio.database.model.Store;
 
 /**
@@ -16,7 +17,7 @@ import vesnell.pl.lsportfolio.database.model.Store;
 public class DBConfigUtil extends OrmLiteConfigUtil {
 
     private static final Class<?>[] classes = new Class[] {
-            Project.class, Image.class, Store.class
+            Project.class, ProjectDetails.class, Image.class, Store.class
     };
 
     public static void main(String[] args) throws SQLException, IOException {

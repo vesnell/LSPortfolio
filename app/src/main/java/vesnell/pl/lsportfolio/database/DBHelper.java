@@ -13,6 +13,7 @@ import java.sql.SQLException;
 import vesnell.pl.lsportfolio.R;
 import vesnell.pl.lsportfolio.database.model.Image;
 import vesnell.pl.lsportfolio.database.model.Project;
+import vesnell.pl.lsportfolio.database.model.ProjectDetails;
 import vesnell.pl.lsportfolio.database.model.Store;
 
 public class DBHelper extends OrmLiteSqliteOpenHelper {
@@ -40,6 +41,7 @@ public class DBHelper extends OrmLiteSqliteOpenHelper {
     public void onCreate(SQLiteDatabase database, ConnectionSource connectionSource) {
         try {
             TableUtils.createTable(connectionSource, Project.class);
+            TableUtils.createTable(connectionSource, ProjectDetails.class);
             TableUtils.createTable(connectionSource, Image.class);
             TableUtils.createTable(connectionSource, Store.class);
         } catch(SQLException e) {
@@ -52,6 +54,7 @@ public class DBHelper extends OrmLiteSqliteOpenHelper {
         try {
             TableUtils.dropTable(connectionSource, Store.class, true);
             TableUtils.dropTable(connectionSource, Image.class, true);
+            TableUtils.dropTable(connectionSource, ProjectDetails.class, true);
             TableUtils.dropTable(connectionSource, Project.class, true);
             onCreate(database, connectionSource);
         } catch(SQLException e) {
