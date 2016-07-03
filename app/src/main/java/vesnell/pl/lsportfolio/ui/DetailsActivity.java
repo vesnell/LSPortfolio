@@ -2,11 +2,14 @@ package vesnell.pl.lsportfolio.ui;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -14,10 +17,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
 
 import java.util.List;
 
 import vesnell.pl.lsportfolio.R;
+import vesnell.pl.lsportfolio.model.Image;
 import vesnell.pl.lsportfolio.model.Project;
 import vesnell.pl.lsportfolio.model.ProjectDetails;
 import vesnell.pl.lsportfolio.model.Store;
@@ -114,10 +119,11 @@ public class DetailsActivity extends AppCompatActivity implements DownloadResult
         tvName.setText(projectDetails.getName());
         tvDescription.setText(projectDetails.getDescription());
         stores = projectDetails.getStores();
-        setStores(stores);
+        setStores();
+        setGallery(projectDetails.getImages());
     }
 
-    private void setStores(List<Store> stores) {
+    private void setStores() {
         switch (stores.size()) {
             case 3:
                 Store store3 = stores.get(2);
@@ -155,5 +161,39 @@ public class DetailsActivity extends AppCompatActivity implements DownloadResult
         Intent i = new Intent(Intent.ACTION_VIEW);
         i.setData(Uri.parse(url));
         startActivity(i);
+    }
+
+    public void setGallery(List<Image> gallery) {
+        for (Image image : gallery) {
+            Picasso.with(this)
+                    .load(image.getUrl())
+                    .into(new Target() {
+                        @Override
+                        public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+                            llGallery.addView(insertPhoto(bitmap));
+                        }
+
+                        @Override
+                        public void onBitmapFailed(Drawable errorDrawable) {}
+
+                        @Override
+                        public void onPrepareLoad(Drawable placeHolderDrawable) {}
+                    });
+        }
+    }
+
+    private View insertPhoto(Bitmap bitmap){
+
+        LinearLayout layout = new LinearLayout(getApplicationContext());
+        layout.setLayoutParams(new LinearLayout.LayoutParams(250, 480));
+        layout.setGravity(Gravity.CENTER);
+
+        ImageView imageView = new ImageView(getApplicationContext());
+        imageView.setLayoutParams(new LinearLayout.LayoutParams(240, 460));
+        imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+        imageView.setImageBitmap(bitmap);
+
+        layout.addView(imageView);
+        return layout;
     }
 }
