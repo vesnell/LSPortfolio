@@ -58,25 +58,28 @@
 
     <ImageView
         android:id="@+id/store1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="@dimen/store_item_width"
+        android:layout_height="@dimen/store_item_height"
         android:clickable="true"
         android:onClick="onStoreClick"
+        android:visibility="gone"
         android:layout_marginBottom="@dimen/details_vertical_margin"/>
 
     <ImageView
         android:id="@+id/store2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="@dimen/store_item_width"
+        android:layout_height="@dimen/store_item_height"
         android:clickable="true"
         android:onClick="onStoreClick"
+        android:visibility="gone"
         android:layout_marginBottom="@dimen/details_vertical_margin"/>
 
     <ImageView
         android:id="@+id/store3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="@dimen/store_item_width"
+        android:layout_height="@dimen/store_item_height"
         android:clickable="true"
+        android:visibility="gone"
         android:onClick="onStoreClick"/>
 
 </LinearLayout>
