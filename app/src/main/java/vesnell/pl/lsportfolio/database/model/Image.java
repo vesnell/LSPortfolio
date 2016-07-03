@@ -15,15 +15,24 @@ public class Image implements Serializable, Comparable<Image> {
 
     @DatabaseField(generatedId = true)
     private int id;
-    @DatabaseField(foreign = true, foreignAutoCreate = true, foreignAutoRefresh = true)
-    private Project project;
+    @DatabaseField(foreign = true, foreignAutoCreate = true, foreignAutoRefresh = true, canBeNull = false)
+    private ProjectDetails projectDetails;
     @DatabaseField
     private String url;
 
     public Image() {}
 
-    public Image(String url) {
+    public Image(String url, ProjectDetails projectDetails) {
         this.url = url;
+        this.projectDetails = projectDetails;
+    }
+
+    public ProjectDetails getProjectDetails() {
+        return projectDetails;
+    }
+
+    public void setProjectDetails(ProjectDetails projectDetails) {
+        this.projectDetails = projectDetails;
     }
 
     public String getUrl() {

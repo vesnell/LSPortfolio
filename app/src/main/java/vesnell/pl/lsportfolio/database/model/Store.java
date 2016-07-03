@@ -19,8 +19,8 @@ public class Store implements Serializable, Comparable<Store> {
 
     @DatabaseField(generatedId = true)
     private int id;
-    @DatabaseField(foreign = true, foreignAutoCreate = true, foreignAutoRefresh = true)
-    private Project project;
+    @DatabaseField(foreign = true, foreignAutoCreate = true, foreignAutoRefresh = true, canBeNull = false)
+    private ProjectDetails projectDetails;
     @DatabaseField
     private String url;
     @DatabaseField
@@ -28,11 +28,20 @@ public class Store implements Serializable, Comparable<Store> {
 
     public Store() {}
 
-    public Store(JSONObject jsonObject) {
+    public Store(JSONObject jsonObject, ProjectDetails projectDetails) {
         String url = jsonObject.optString(JsonTags.URL);
         String image = jsonObject.optString(JsonTags.IMAGE);
         this.url = url;
         this.image = image;
+        this.projectDetails = projectDetails;
+    }
+
+    public ProjectDetails getProjectDetails() {
+        return projectDetails;
+    }
+
+    public void setProjectDetails(ProjectDetails projectDetails) {
+        this.projectDetails = projectDetails;
     }
 
     public String getUrl() {
