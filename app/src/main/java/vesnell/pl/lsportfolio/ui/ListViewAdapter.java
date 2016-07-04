@@ -1,11 +1,13 @@
 package vesnell.pl.lsportfolio.ui;
 
 import android.content.Context;
+import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
@@ -22,6 +24,7 @@ public class ListViewAdapter extends BaseAdapter {
     private List<Project> projects = new ArrayList<Project>();
 
     static class ViewHolder {
+        public LinearLayout rowLayout;
         public TextView tvName;
         public ImageView ivIcon;
     }
@@ -61,6 +64,7 @@ public class ListViewAdapter extends BaseAdapter {
             ViewHolder viewHolder = new ViewHolder();
             viewHolder.tvName = (TextView) rowView.findViewById(R.id.name);
             viewHolder.ivIcon = (ImageView) rowView.findViewById(R.id.icon);
+            viewHolder.rowLayout = (LinearLayout) rowView.findViewById(R.id.item_row);
             rowView.setTag(viewHolder);
         }
 
@@ -73,6 +77,12 @@ public class ListViewAdapter extends BaseAdapter {
 
         Picasso.with(context).load(projects.get(position).getIcon())
                 .resizeDimen(R.dimen.list_item_width, R.dimen.list_item_height).centerCrop().into(holder.ivIcon);
+
+        if (position % 2 == 0) {
+            holder.rowLayout.setBackgroundColor(ContextCompat.getColor(context, R.color.itemRowGrey));
+        } else {
+            holder.rowLayout.setBackgroundColor(ContextCompat.getColor(context, R.color.white));
+        }
 
         return rowView;
     }

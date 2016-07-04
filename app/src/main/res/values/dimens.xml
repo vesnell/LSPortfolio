@@ -12,6 +12,9 @@
 
     <dimen name="list_item_width">64dp</dimen>
     <dimen name="list_item_height">64dp</dimen>
+    <dimen name="list_item_padding_top_bottom">16dp</dimen>
+    <dimen name="list_item_text_padding_left">12dp</dimen>
+    <dimen name="list_item_text_padding_right">12dp</dimen>
 
     <dimen name="details_vertical_margin">8dp</dimen>
     <dimen name="details_name_textsize">16sp</dimen>
@@ -19,4 +22,6 @@
 
     <dimen name="store_item_width">256dp</dimen>
     <dimen name="store_item_height">64dp</dimen>
+
+    <dimen name="gallery_margin_item">4dp</dimen>
 </resources>

@@ -2,23 +2,18 @@ package vesnell.pl.lsportfolio.ui;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.view.Gravity;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
-import com.squareup.picasso.Target;
 
 import java.util.List;
 
@@ -187,7 +182,8 @@ public class DetailsActivity extends AppCompatActivity implements DownloadResult
         ImageView imageView = new ImageView(getApplicationContext());
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT);
-        params.setMargins(4, 0, 4, 0);
+        params.setMargins(getResources().getDimensionPixelSize(R.dimen.gallery_margin_item), 0,
+                getResources().getDimensionPixelSize(R.dimen.gallery_margin_item), 0);
         imageView.setLayoutParams(params);
         imageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
         return imageView;
