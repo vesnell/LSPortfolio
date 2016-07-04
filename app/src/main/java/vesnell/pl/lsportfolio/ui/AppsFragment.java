@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -42,7 +43,7 @@ public class AppsFragment extends Fragment implements DownloadResultReceiver.Rec
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, final ViewGroup container, Bundle savedInstanceState) {
         View v =  inflater.inflate(R.layout.apps_fragment, container, false);
         context = container.getContext();
 
@@ -61,6 +62,7 @@ public class AppsFragment extends Fragment implements DownloadResultReceiver.Rec
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 if (projects != null) {
+                    view.setBackgroundColor(ContextCompat.getColor(context, R.color.colorPrimary));
                     Project project = projects.get(position);
                     Intent i = new Intent(getActivity(), DetailsActivity.class);
                     i.putExtra(Project.NAME, project);
@@ -148,5 +150,11 @@ public class AppsFragment extends Fragment implements DownloadResultReceiver.Rec
             progressDialog.dismiss();
         }
         progressDialog = null;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        adapter.notifyDataSetChanged();
     }
 }
