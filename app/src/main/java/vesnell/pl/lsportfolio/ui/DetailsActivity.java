@@ -11,6 +11,7 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -165,35 +166,39 @@ public class DetailsActivity extends AppCompatActivity implements DownloadResult
 
     public void setGallery(List<Image> gallery) {
         for (Image image : gallery) {
+            final ImageView imageView = getImageViewGalleryContent();
             Picasso.with(this)
                     .load(image.getUrl())
-                    .into(new Target() {
+                    .into(imageView, new com.squareup.picasso.Callback() {
                         @Override
-                        public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
-                            llGallery.addView(insertPhoto(bitmap));
+                        public void onSuccess() {
+                            llGallery.addView(imageView);
                         }
 
                         @Override
-                        public void onBitmapFailed(Drawable errorDrawable) {}
+                        public void onError() {
 
-                        @Override
-                        public void onPrepareLoad(Drawable placeHolderDrawable) {}
+                        }
                     });
         }
     }
 
-    private View insertPhoto(Bitmap bitmap){
-
-        LinearLayout layout = new LinearLayout(getApplicationContext());
-        layout.setLayoutParams(new LinearLayout.LayoutParams(250, 480));
-        layout.setGravity(Gravity.CENTER);
-
+    private ImageView getImageViewGalleryContent(){
         ImageView imageView = new ImageView(getApplicationContext());
-        imageView.setLayoutParams(new LinearLayout.LayoutParams(240, 460));
-        imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-        imageView.setImageBitmap(bitmap);
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT);
+        params.setMargins(4, 0, 4, 0);
+        imageView.setLayoutParams(params);
+        imageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
+        return imageView;
+    }
 
-        layout.addView(imageView);
-        return layout;
+    @Override
+    public void onPause() {
+        super.onPause();
+        if ((progressDialog != null) && progressDialog.isShowing()) {
+            progressDialog.dismiss();
+        }
+        progressDialog = null;
     }
 }
