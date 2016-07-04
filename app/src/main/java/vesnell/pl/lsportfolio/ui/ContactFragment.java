@@ -13,11 +13,6 @@ public class ContactFragment extends Fragment {
 
     public static final String TAG = "ContactFragment";
 
-    public static ContactFragment newInstance() {
-        ContactFragment f = new ContactFragment();
-        return f;
-    }
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v =  inflater.inflate(R.layout.contact_fragment, container, false);

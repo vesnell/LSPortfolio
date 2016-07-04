@@ -104,7 +104,11 @@ public class MainActivity extends AppCompatActivity
                 DownloadService.DownloadType fragType = (DownloadService.DownloadType) savedInstanceState.getSerializable(FRAG_TYPE);
                 switch (fragType) {
                     case APPS:
-                        appsFragment = (AppsFragment) getSupportFragmentManager().findFragmentByTag(AppsFragment.TAG);
+                        if (appsFragment != null) {
+                            setViewApps();
+                        } else {
+                            appsFragment = (AppsFragment) getSupportFragmentManager().findFragmentByTag(AppsFragment.TAG);
+                        }
                         break;
                     case DETAILS:
                         if (contactFragment != null) {
@@ -121,14 +125,14 @@ public class MainActivity extends AppCompatActivity
     private void setViewApps() {
         toolbarTitle.setText(getString(R.string.menu_apps));
 
-        appsFragment = AppsFragment.newInstance();
+        appsFragment = new AppsFragment();
         getSupportFragmentManager().beginTransaction().replace(fragContainer.getId(), appsFragment, AppsFragment.TAG).commit();
     }
 
     private void setViewContact() {
         toolbarTitle.setText(getString(R.string.menu_contact));
 
-        contactFragment = ContactFragment.newInstance();
+        contactFragment = new ContactFragment();
         getSupportFragmentManager().beginTransaction().replace(fragContainer.getId(), contactFragment, ContactFragment.TAG).commit();
     }
 

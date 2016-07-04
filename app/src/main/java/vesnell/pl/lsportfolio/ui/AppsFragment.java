@@ -37,11 +37,6 @@ public class AppsFragment extends Fragment implements DownloadResultReceiver.Rec
     private List<Project> projects;
     private Context context;
 
-    public static AppsFragment newInstance() {
-        AppsFragment f = new AppsFragment();
-        return f;
-    }
-
     @Override
     public View onCreateView(LayoutInflater inflater, final ViewGroup container, Bundle savedInstanceState) {
         View v =  inflater.inflate(R.layout.apps_fragment, container, false);
@@ -87,7 +82,6 @@ public class AppsFragment extends Fragment implements DownloadResultReceiver.Rec
 
         //start service to download projects
         startDownloadService(projectsUrl);
-
         return v;
     }
 
