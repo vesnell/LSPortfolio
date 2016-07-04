@@ -17,14 +17,20 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import vesnell.pl.lsportfolio.R;
+import vesnell.pl.lsportfolio.service.DownloadService;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+
+    private static final String FRAG_TYPE = "fragType";
 
     private DrawerLayout drawer;
     private TextView toolbarTitle;
     private LinearLayout ll;
     private FrameLayout fragContainer;
+    private AppsFragment appsFragment;
+    private ContactFragment contactFragment;
+    private DownloadService.DownloadType fragType = DownloadService.DownloadType.APPS;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,7 +68,7 @@ public class MainActivity extends AppCompatActivity
             }
         });
 
-        setViewApps();
+        setViewApps(savedInstanceState);
     }
 
     @Override
@@ -75,14 +81,15 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
-    @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         int id = item.getItemId();
 
         if (id == R.id.apps) {
+            fragType = DownloadService.DownloadType.APPS;
             setViewApps();
         } else if (id == R.id.contact) {
+            fragType = DownloadService.DownloadType.DETAILS;
             setViewContact();
         }
 
@@ -90,22 +97,40 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
+    private void setViewApps(Bundle savedInstanceState) {
+        if (ll != null) {
+            if(savedInstanceState == null) {
+                setViewApps();
+            } else {
+                DownloadService.DownloadType fragType = (DownloadService.DownloadType) savedInstanceState.getSerializable(FRAG_TYPE);
+                switch (fragType) {
+                    case APPS:
+                        appsFragment = (AppsFragment) getSupportFragmentManager().findFragmentByTag(AppsFragment.TAG);
+                        break;
+                    case DETAILS:
+                        if (contactFragment != null) {
+                            setViewContact();
+                        } else {
+                            contactFragment = (ContactFragment) getSupportFragmentManager().findFragmentByTag(ContactFragment.TAG);
+                        }
+                        break;
+                }
+            }
+        }
+    }
+
     private void setViewApps() {
         toolbarTitle.setText(getString(R.string.menu_apps));
 
-        removeFragment(AppsFragment.TAG);
-        removeFragment(ContactFragment.TAG);
-        getSupportFragmentManager().beginTransaction().add(ll.getId(), AppsFragment.newInstance(), AppsFragment.TAG).commit();
-        fragContainer.addView(ll);
+        appsFragment = AppsFragment.newInstance();
+        getSupportFragmentManager().beginTransaction().replace(fragContainer.getId(), appsFragment, AppsFragment.TAG).commit();
     }
 
     private void setViewContact() {
         toolbarTitle.setText(getString(R.string.menu_contact));
 
-        removeFragment(AppsFragment.TAG);
-        removeFragment(ContactFragment.TAG);
-        getSupportFragmentManager().beginTransaction().add(ll.getId(), ContactFragment.newInstance(), ContactFragment.TAG).commit();
-        fragContainer.addView(ll);
+        contactFragment = ContactFragment.newInstance();
+        getSupportFragmentManager().beginTransaction().replace(fragContainer.getId(), contactFragment, ContactFragment.TAG).commit();
     }
 
     private void removeFragment(String tag) {
@@ -114,5 +139,11 @@ public class MainActivity extends AppCompatActivity
             getSupportFragmentManager().beginTransaction().remove(fragment).commit();
             fragContainer.removeAllViews();
         }
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putSerializable(FRAG_TYPE, fragType);
     }
 }

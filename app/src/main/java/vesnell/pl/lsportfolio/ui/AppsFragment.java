@@ -136,21 +136,21 @@ public class AppsFragment extends Fragment implements DownloadResultReceiver.Rec
             if (swipeRefreshLayout.isRefreshing()) {
                 swipeRefreshLayout.setRefreshing(false);
             } else {
-                if (progressDialog != null) {
+                if (progressDialog != null && progressDialog.isShowing()) {
                     progressDialog.cancel();
                 }
             }
         }
     }
 
-    @Override
+    /*@Override
     public void onPause() {
         super.onPause();
-        if ((progressDialog != null) && progressDialog.isShowing()) {
+        if (progressDialog != null && progressDialog.isShowing()) {
             progressDialog.dismiss();
         }
         progressDialog = null;
-    }
+    }*/
 
     @Override
     public void onResume() {
