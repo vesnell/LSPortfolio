@@ -125,17 +125,17 @@ public class DetailsActivity extends AppCompatActivity implements DownloadResult
                 Store store3 = stores.get(2);
                 ivStore3.setVisibility(View.VISIBLE);
                 Picasso.with(this).load(store3.getImage())
-                        .fit().centerInside().into(ivStore3);
+                        .resizeDimen(R.dimen.store_item_width, R.dimen.store_item_height).centerInside().into(ivStore3);
             case 2:
                 Store store2 = stores.get(1);
                 ivStore2.setVisibility(View.VISIBLE);
                 Picasso.with(this).load(store2.getImage())
-                        .fit().centerInside().into(ivStore2);
+                        .resizeDimen(R.dimen.store_item_width, R.dimen.store_item_height).centerInside().into(ivStore2);
             case 1:
                 Store store1 = stores.get(0);
                 ivStore1.setVisibility(View.VISIBLE);
                 Picasso.with(this).load(store1.getImage())
-                        .fit().centerInside().into(ivStore1);
+                        .resizeDimen(R.dimen.store_item_width, R.dimen.store_item_height).centerInside().into(ivStore1);
         }
     }
 
