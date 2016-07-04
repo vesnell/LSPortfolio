@@ -3,7 +3,6 @@ package vesnell.pl.lsportfolio.ui;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
-import android.support.v4.app.Fragment;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -131,14 +130,6 @@ public class MainActivity extends AppCompatActivity
 
         contactFragment = ContactFragment.newInstance();
         getSupportFragmentManager().beginTransaction().replace(fragContainer.getId(), contactFragment, ContactFragment.TAG).commit();
-    }
-
-    private void removeFragment(String tag) {
-        Fragment fragment = getSupportFragmentManager().findFragmentByTag(tag);
-        if(fragment != null) {
-            getSupportFragmentManager().beginTransaction().remove(fragment).commit();
-            fragContainer.removeAllViews();
-        }
     }
 
     @Override

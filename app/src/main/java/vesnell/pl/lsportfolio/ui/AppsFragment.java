@@ -143,14 +143,14 @@ public class AppsFragment extends Fragment implements DownloadResultReceiver.Rec
         }
     }
 
-    /*@Override
+    @Override
     public void onPause() {
         super.onPause();
         if (progressDialog != null && progressDialog.isShowing()) {
             progressDialog.dismiss();
         }
         progressDialog = null;
-    }*/
+    }
 
     @Override
     public void onResume() {
