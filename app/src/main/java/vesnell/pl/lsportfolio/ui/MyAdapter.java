@@ -67,8 +67,8 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
         holder.mTextView.setText(mDataset.get(position).name);
 
         //set height in proportion to screen size
-        int proportionalHeight = mContext.getResources().getInteger(R.integer.project_item_row_height);
-        TableRow.LayoutParams params = new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, proportionalHeight); // (width, height)
+        int height = (int) mContext.getResources().getDimension(R.dimen.list_project_item_height);
+        TableRow.LayoutParams params = new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, height); // (width, height)
         holder.mLinearLayout.setLayoutParams(params);
         if (position % 2 == 0) {
             holder.mLinearLayout.setBackgroundColor(ContextCompat.getColor(mContext, R.color.itemRowGrey));

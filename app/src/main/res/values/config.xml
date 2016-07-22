@@ -2,5 +2,4 @@
 <resources>
     <string name="contact_url" translatable="false">http://public.looksoft.pl/portfolio/kontakt.html</string>
     <string name="looksoft_api" translatable="false">http://www.looksoft.pl/api</string>
-    <integer name="project_item_row_height">250</integer>
 </resources>
