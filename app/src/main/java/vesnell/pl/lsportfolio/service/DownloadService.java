@@ -51,9 +51,9 @@ public class DownloadService extends IntentService {
         final ResultReceiver receiver = intent.getParcelableExtra(RECEIVER);
         DownloadType downloadType = (DownloadType) intent.getSerializableExtra(DOWNLOAD_TYPE);
         String url = intent.getStringExtra(URL);
-        if (downloadType == DownloadType.DETAILS) {
-            project = (Project) intent.getSerializableExtra(Project.NAME);
-        }
+        //if (downloadType == DownloadType.DETAILS) {
+            //project = (Project) intent.getSerializableExtra(Project.NAME);
+        //}
         Bundle bundle = new Bundle();
 
         if (!TextUtils.isEmpty(url)) {
@@ -117,7 +117,7 @@ public class DownloadService extends IntentService {
 
                     for (int i = 0; i < items.length(); i++) {
                         JSONObject item = items.optJSONObject(i);
-                        Project project = new Project(item);
+                        Project project = new Project();
                         projects.add(project);
                     }
 

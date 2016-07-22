@@ -1,59 +1,53 @@
 package vesnell.pl.lsportfolio.ui;
 
 import android.app.ProgressDialog;
-import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import java.util.List;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 import vesnell.pl.lsportfolio.R;
+import vesnell.pl.lsportfolio.api.LooksoftMainApi;
+import vesnell.pl.lsportfolio.model.Data;
 import vesnell.pl.lsportfolio.model.Project;
-import vesnell.pl.lsportfolio.service.DownloadService;
-import vesnell.pl.lsportfolio.service.DownloadResultReceiver;
-import vesnell.pl.lsportfolio.service.RunServiceType;
 
-public class AppsFragment extends Fragment implements DownloadResultReceiver.Receiver {
+public class AppsFragment extends Fragment implements Callback<Data> {
 
     public static final String TAG = "AppsFragment";
 
-    private ListView listView;
-    private ListViewAdapter adapter;
-    private DownloadResultReceiver mReceiver;
-    private RunServiceType runServiceType;
+    private RecyclerView listView;
+    private MyAdapter adapter;
     private ProgressDialog progressDialog;
     private SwipeRefreshLayout swipeRefreshLayout;
-    private List<Project> projects;
-    private Context context;
 
     @Override
     public View onCreateView(LayoutInflater inflater, final ViewGroup container, Bundle savedInstanceState) {
         View v =  inflater.inflate(R.layout.apps_fragment, container, false);
-        context = container.getContext();
-
-        final String projectsUrl = getString(R.string.projects_url);
 
         progressDialog = new ProgressDialog(getContext());
-        listView = (ListView) v.findViewById(R.id.listView);
+        listView = (RecyclerView) v.findViewById(R.id.listView);
         swipeRefreshLayout = (SwipeRefreshLayout) v.findViewById(R.id.swipeContainer);
-        TextView emptyView = (TextView) v.findViewById(R.id.tvEmpty);
-        listView.setEmptyView(emptyView);
 
-        adapter = new ListViewAdapter(getContext());
-        listView.setAdapter(adapter);
+        LinearLayoutManager llm = new LinearLayoutManager(getContext());
+        llm.setOrientation(LinearLayoutManager.VERTICAL);
+        listView.setLayoutManager(llm);
 
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        /*listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 if (projects != null) {
@@ -64,61 +58,60 @@ public class AppsFragment extends Fragment implements DownloadResultReceiver.Rec
                     startActivity(i);
                 }
             }
-        });
-
-        mReceiver = new DownloadResultReceiver(new Handler());
-        mReceiver.setReceiver(this);
+        });*/
 
         swipeRefreshLayout.setOnRefreshListener(
                 new SwipeRefreshLayout.OnRefreshListener() {
                     @Override
                     public void onRefresh() {
-                        runServiceType = RunServiceType.REFRESH;
                         swipeRefreshLayout.setRefreshing(true);
-                        startDownloadService(projectsUrl);
+                        startDownloadProjects();
                     }
                 }
         );
 
-        //start service to download projects
-        startDownloadService(projectsUrl);
+        adapter = new MyAdapter(getContext());
+        listView.setAdapter(adapter);
+
+        startDownloadProjects();
         return v;
     }
 
-    private void startDownloadService(String url) {
-        //send extras to download service
-        Intent intent = new Intent(Intent.ACTION_SYNC, null, getContext(), DownloadService.class);
-        intent.putExtra(DownloadService.URL, url);
-        intent.putExtra(DownloadService.RECEIVER, mReceiver);
-        intent.putExtra(DownloadService.DOWNLOAD_TYPE, DownloadService.DownloadType.APPS);
-        getActivity().startService(intent);
+    private void startDownloadProjects() {
+        setEnabledDownloadAction(true);
+
+        Gson gson = new GsonBuilder()
+                .setDateFormat("yyyy-MM-dd HH:mm:ss")
+                .create();
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(LooksoftMainApi.ENDPOINT)
+                .addConverterFactory(GsonConverterFactory.create(gson))
+                .build();
+
+        LooksoftMainApi looksoftMainApi = retrofit.create(LooksoftMainApi.class);
+        Call<Data> call = looksoftMainApi.loadData();
+        call.enqueue(this);
     }
 
     @Override
-    public void onReceiveResult(int resultCode, Bundle resultData) {
-        switch (resultCode) {
-            case DownloadService.STATUS_RUNNING:
-                setEnabledDownloadAction(true);
-                break;
-            case DownloadService.STATUS_ERROR:
-                String error = resultData.getString(Intent.EXTRA_TEXT);
-                Toast.makeText(context, error, Toast.LENGTH_LONG).show();
-            case DownloadService.STATUS_FINISHED:
-                projects = (List<Project>) resultData.getSerializable(DownloadService.RESULT);
-                if (projects != null && projects.size() > 0) {
-                    showProjectList();
-                }
-                setEnabledDownloadAction(false);
-                break;
+    public void onResponse(Call<Data> call, Response<Data> response) {
+        setEnabledDownloadAction(false);
+        int code = response.code();
+        if (code == 200) {
+            showProjectList(response.body().data.portfolio);
+        } else {
+            Toast.makeText(getContext(), String.valueOf(code), Toast.LENGTH_SHORT).show();
         }
     }
 
-    private void showProjectList() {
-        adapter.setProjects(projects);
-        listView.invalidateViews();
-        if (runServiceType == RunServiceType.REFRESH) {
-            listView.setSelection(0);
-        }
+    @Override
+    public void onFailure(Call<Data> call, Throwable t) {
+        setEnabledDownloadAction(false);
+        Toast.makeText(getContext(), t.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+    }
+
+    private void showProjectList(List<Project> projects) {
+        adapter.swap(projects);
     }
 
     private void setEnabledDownloadAction(boolean isEnabled) {
@@ -135,20 +128,5 @@ public class AppsFragment extends Fragment implements DownloadResultReceiver.Rec
                 }
             }
         }
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        if (progressDialog != null && progressDialog.isShowing()) {
-            progressDialog.dismiss();
-        }
-        progressDialog = null;
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        adapter.notifyDataSetChanged();
     }
 }

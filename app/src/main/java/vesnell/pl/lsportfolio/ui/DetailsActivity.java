@@ -44,7 +44,7 @@ public class DetailsActivity extends AppCompatActivity implements DownloadResult
         setContentView(R.layout.activity_details);
 
         Bundle b = getIntent().getExtras();
-        Project project = (Project) b.getSerializable(Project.NAME);
+        /*Project project = (Project) b.getSerializable(Project.NAME);
 
         getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM | ActionBar.DISPLAY_HOME_AS_UP);
         getSupportActionBar().setCustomView(R.layout.custom_actionbar_text);
@@ -67,17 +67,17 @@ public class DetailsActivity extends AppCompatActivity implements DownloadResult
         mReceiver.setReceiver(this);
 
         String projectDetailsUrl = String.format(getString(R.string.project_details_url), project.getId());
-        startDownloadService(projectDetailsUrl, project);
+        startDownloadService(projectDetailsUrl, project);*/
     }
 
-    private void startDownloadService(String url, Project project) {
+    /*private void startDownloadService(String url, Project project) {
         Intent intent = new Intent(Intent.ACTION_SYNC, null, this, DownloadService.class);
         intent.putExtra(DownloadService.URL, url);
         intent.putExtra(Project.NAME, project);
         intent.putExtra(DownloadService.RECEIVER, mReceiver);
         intent.putExtra(DownloadService.DOWNLOAD_TYPE, DownloadService.DownloadType.DETAILS);
         startService(intent);
-    }
+    }*/
 
     @Override
     public void onReceiveResult(int resultCode, Bundle resultData) {

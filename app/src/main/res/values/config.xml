@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="contact_url" translatable="false">http://public.looksoft.pl/portfolio/kontakt.html</string>
-    <string name="projects_url" translatable="false">http://www.looksoft.pl/api/main</string>
-    <string name="project_details_url" translatable="false">http://www.looksoft.pl/api/product/%1$s</string>
+    <string name="looksoft_api" translatable="false">http://www.looksoft.pl/api</string>
+    <integer name="project_item_row_height">250</integer>
 </resources>
