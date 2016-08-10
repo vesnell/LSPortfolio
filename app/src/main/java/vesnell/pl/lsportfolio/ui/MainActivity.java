@@ -15,6 +15,8 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import butterknife.Bind;
+import butterknife.ButterKnife;
 import vesnell.pl.lsportfolio.R;
 
 public class MainActivity extends AppCompatActivity
@@ -22,10 +24,18 @@ public class MainActivity extends AppCompatActivity
 
     private static final String FRAG_TYPE = "fragType";
 
-    private DrawerLayout drawer;
-    private TextView toolbarTitle;
+    @Bind(R.id.toolbar)
+    Toolbar toolbar;
+    @Bind(R.id.drawer_layout)
+    DrawerLayout drawer;
+    @Bind(R.id.toolbar_title)
+    TextView toolbarTitle;
+    @Bind(R.id.flFragmentContainer)
+    FrameLayout fragContainer;
+    @Bind(R.id.nav_view)
+    NavigationView navigationView;
+
     private LinearLayout ll;
-    private FrameLayout fragContainer;
     private AppsFragment appsFragment;
     private ContactFragment contactFragment;
     private UIInterface fragType = UIInterface.APPS;
@@ -34,17 +44,18 @@ public class MainActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        toolbarTitle = (TextView) toolbar.findViewById(R.id.toolbar_title);
+        ButterKnife.bind(this);
+
         setSupportActionBar(toolbar);
 
-        fragContainer = (FrameLayout) findViewById(R.id.flFragmentContainer);
+
+        //toolbarTitle = (TextView) toolbar.findViewById(R.id.toolbar_title);
+
         ll = new LinearLayout(this);
         ll.setOrientation(LinearLayout.VERTICAL);
         ll.setId(R.id.fragment_container_id);
 
         Drawable drawable = ResourcesCompat.getDrawable(getResources(), R.drawable.menu_icon, null);
-        drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
@@ -52,7 +63,6 @@ public class MainActivity extends AppCompatActivity
         toggle.setHomeAsUpIndicator(drawable);
         toggle.syncState();
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
         toggle.setToolbarNavigationClickListener(new View.OnClickListener() {
