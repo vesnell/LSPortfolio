@@ -1,4 +1,4 @@
-package vesnell.pl.lsportfolio.model;
+package vesnell.pl.lsportfolio.model.main;
 
 import java.util.List;
 

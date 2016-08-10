@@ -1,7 +1,6 @@
 package vesnell.pl.lsportfolio.ui;
 
 import android.content.Context;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,16 +16,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 import vesnell.pl.lsportfolio.R;
-import vesnell.pl.lsportfolio.model.Project;
+import vesnell.pl.lsportfolio.model.main.Project;
 
 public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
     private Context mContext;
     private List<Project> mDataset;
+    OnItemClickListener mItemClickListener;
 
     // Provide a reference to the views for each data item
     // Complex data items may need more than one view per item, and
     // you provide access to all the views for a data item in a view holder
-    public static class ViewHolder extends RecyclerView.ViewHolder {
+    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
         public TextView mTextView;
         public LinearLayout mLinearLayout;
         public ImageView mImageView;
@@ -35,7 +35,23 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
             mTextView = (TextView) itemView.findViewById(R.id.name);
             mImageView = (ImageView) itemView.findViewById(R.id.icon);
             mLinearLayout = (LinearLayout) itemView.findViewById(R.id.item_row);
+            itemView.setOnClickListener(this);
         }
+
+        @Override
+        public void onClick(View v) {
+            if (mItemClickListener != null) {
+                mItemClickListener.onItemClick(v, getAdapterPosition());
+            }
+        }
+    }
+
+    public interface OnItemClickListener {
+        public void onItemClick(View v, int position);
+    }
+
+    public void setOnItemClickListenr(final OnItemClickListener mItemClickListener) {
+        this.mItemClickListener = mItemClickListener;
     }
 
     // Provide a suitable constructor (depends on the kind of dataset)
@@ -71,9 +87,9 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
         TableRow.LayoutParams params = new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, height); // (width, height)
         holder.mLinearLayout.setLayoutParams(params);
         if (position % 2 == 0) {
-            holder.mLinearLayout.setBackgroundColor(ContextCompat.getColor(mContext, R.color.itemRowGrey));
+            holder.mLinearLayout.setBackgroundResource(R.drawable.item_bg_even);
         } else {
-            holder.mLinearLayout.setBackgroundColor(ContextCompat.getColor(mContext, R.color.white));
+            holder.mLinearLayout.setBackgroundResource(R.drawable.item_bg_not_even);
         }
         Picasso.with(mContext).load(mDataset.get(position).icon)
                 .resizeDimen(R.dimen.list_item_width, R.dimen.list_item_height).centerCrop().into(holder.mImageView);
@@ -101,4 +117,10 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
         mDataset.addAll(items);
         notifyDataSetChanged();
     }
+
+    public List<Project> getProjects() {
+        return mDataset;
+    }
+
+
 }

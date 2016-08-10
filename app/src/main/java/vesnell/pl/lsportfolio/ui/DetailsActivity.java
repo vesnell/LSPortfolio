@@ -4,7 +4,6 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -13,19 +12,26 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 import vesnell.pl.lsportfolio.R;
-import vesnell.pl.lsportfolio.model.Image;
-import vesnell.pl.lsportfolio.model.Project;
-import vesnell.pl.lsportfolio.model.ProjectDetails;
-import vesnell.pl.lsportfolio.model.Store;
-import vesnell.pl.lsportfolio.service.DownloadService;
-import vesnell.pl.lsportfolio.service.DownloadResultReceiver;
+import vesnell.pl.lsportfolio.api.LooksoftApi;
+import vesnell.pl.lsportfolio.api.LooksoftDetailsApi;
+import vesnell.pl.lsportfolio.model.details.Data;
+import vesnell.pl.lsportfolio.model.main.Project;
+import vesnell.pl.lsportfolio.model.details.ProjectDetails;
+import vesnell.pl.lsportfolio.model.details.Store;
 
-public class DetailsActivity extends AppCompatActivity implements DownloadResultReceiver.Receiver {
+public class DetailsActivity extends AppCompatActivity implements Callback<Data> {
 
     private TextView tvName;
     private TextView tvDescription;
@@ -34,7 +40,6 @@ public class DetailsActivity extends AppCompatActivity implements DownloadResult
     private ImageView ivStore2;
     private ImageView ivStore3;
 
-    private DownloadResultReceiver mReceiver;
     private ProgressDialog progressDialog;
     private List<Store> stores;
 
@@ -44,12 +49,13 @@ public class DetailsActivity extends AppCompatActivity implements DownloadResult
         setContentView(R.layout.activity_details);
 
         Bundle b = getIntent().getExtras();
-        /*Project project = (Project) b.getSerializable(Project.NAME);
+        Project project = (Project) b.getSerializable(Project.NAME);
 
         getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM | ActionBar.DISPLAY_HOME_AS_UP);
         getSupportActionBar().setCustomView(R.layout.custom_actionbar_text);
         TextView actionBarTitle = (TextView) getSupportActionBar().getCustomView().findViewById(R.id.toolbar_title);
-        actionBarTitle.setText(project.getName());
+
+        progressDialog = new ProgressDialog(this);
 
         ImageView ivIcon = (ImageView) findViewById(R.id.icon);
         tvName = (TextView) findViewById(R.id.name);
@@ -59,46 +65,28 @@ public class DetailsActivity extends AppCompatActivity implements DownloadResult
         ivStore2 = (ImageView) findViewById(R.id.store2);
         ivStore3 = (ImageView) findViewById(R.id.store3);
 
-        Picasso.with(this).load(project.getIcon())
+        actionBarTitle.setText(project.name);
+        Picasso.with(this).load(project.icon)
                 .resizeDimen(R.dimen.list_item_width, R.dimen.list_item_height).centerCrop().into(ivIcon);
 
-        progressDialog = new ProgressDialog(this);
-        mReceiver = new DownloadResultReceiver(new Handler());
-        mReceiver.setReceiver(this);
-
-        String projectDetailsUrl = String.format(getString(R.string.project_details_url), project.getId());
-        startDownloadService(projectDetailsUrl, project);*/
+        startDownloadDetailsProject(project);
     }
 
-    /*private void startDownloadService(String url, Project project) {
-        Intent intent = new Intent(Intent.ACTION_SYNC, null, this, DownloadService.class);
-        intent.putExtra(DownloadService.URL, url);
-        intent.putExtra(Project.NAME, project);
-        intent.putExtra(DownloadService.RECEIVER, mReceiver);
-        intent.putExtra(DownloadService.DOWNLOAD_TYPE, DownloadService.DownloadType.DETAILS);
-        startService(intent);
-    }*/
+    private void startDownloadDetailsProject(Project project) {
+        setEnabledDownloadAction(true);
 
-    @Override
-    public void onReceiveResult(int resultCode, Bundle resultData) {
-        switch (resultCode) {
-            case DownloadService.STATUS_RUNNING:
-                setEnabledDownloadAction(true);
-                break;
-            case DownloadService.STATUS_ERROR:
-                String error = resultData.getString(Intent.EXTRA_TEXT);
-                Toast.makeText(this, error, Toast.LENGTH_LONG).show();
-            case DownloadService.STATUS_FINISHED:
-                ProjectDetails projectDetails = (ProjectDetails) resultData.getSerializable(DownloadService.RESULT);
-                if (projectDetails != null) {
-                    setProjectDetailsContent(projectDetails);
-                } else {
-                    String projectDetailsNull = getString(R.string.project_details_null);
-                    Toast.makeText(this, projectDetailsNull, Toast.LENGTH_LONG).show();
-                }
-                setEnabledDownloadAction(false);
-                break;
-        }
+        Gson gson = new GsonBuilder()
+                .setDateFormat("yyyy-MM-dd HH:mm:ss")
+                .create();
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(LooksoftApi.ENDPOINT)
+                .addConverterFactory(GsonConverterFactory.create(gson))
+                .build();
+
+        String projectId = Integer.toString(project.id);
+        LooksoftDetailsApi looksoftDetailsApi = retrofit.create(LooksoftDetailsApi.class);
+        Call<Data> call = looksoftDetailsApi.getDetails(projectId);
+        call.enqueue(this);
     }
 
     private void setEnabledDownloadAction(boolean isEnabled) {
@@ -112,11 +100,11 @@ public class DetailsActivity extends AppCompatActivity implements DownloadResult
     }
 
     private void setProjectDetailsContent(ProjectDetails projectDetails) {
-        tvName.setText(projectDetails.getName());
-        tvDescription.setText(projectDetails.getDescription());
-        stores = projectDetails.getStores();
+        tvName.setText(projectDetails.name);
+        tvDescription.setText(projectDetails.description);
+        stores = projectDetails.link;
         setStores();
-        setGallery(projectDetails.getImages());
+        setGallery(projectDetails.gallery);
     }
 
     private void setStores() {
@@ -124,17 +112,17 @@ public class DetailsActivity extends AppCompatActivity implements DownloadResult
             case 3:
                 Store store3 = stores.get(2);
                 ivStore3.setVisibility(View.VISIBLE);
-                Picasso.with(this).load(store3.getImage())
+                Picasso.with(this).load(store3.image)
                         .resizeDimen(R.dimen.store_item_width, R.dimen.store_item_height).centerInside().into(ivStore3);
             case 2:
                 Store store2 = stores.get(1);
                 ivStore2.setVisibility(View.VISIBLE);
-                Picasso.with(this).load(store2.getImage())
+                Picasso.with(this).load(store2.image)
                         .resizeDimen(R.dimen.store_item_width, R.dimen.store_item_height).centerInside().into(ivStore2);
             case 1:
                 Store store1 = stores.get(0);
                 ivStore1.setVisibility(View.VISIBLE);
-                Picasso.with(this).load(store1.getImage())
+                Picasso.with(this).load(store1.image)
                         .resizeDimen(R.dimen.store_item_width, R.dimen.store_item_height).centerInside().into(ivStore1);
         }
     }
@@ -142,13 +130,13 @@ public class DetailsActivity extends AppCompatActivity implements DownloadResult
     public void onStoreClick(View v) {
         switch(v.getId()) {
             case R.id.store1:
-                openStore(stores.get(0).getUrl());
+                openStore(stores.get(0).url);
                 break;
             case R.id.store2:
-                openStore(stores.get(1).getUrl());
+                openStore(stores.get(1).url);
                 break;
             case R.id.store3:
-                openStore(stores.get(2).getUrl());
+                openStore(stores.get(2).url);
                 break;
         }
     }
@@ -159,11 +147,11 @@ public class DetailsActivity extends AppCompatActivity implements DownloadResult
         startActivity(i);
     }
 
-    public void setGallery(List<Image> gallery) {
-        for (Image image : gallery) {
+    public void setGallery(List<String> gallery) {
+        for (String image: gallery) {
             final ImageView imageView = getImageViewGalleryContent();
             Picasso.with(this)
-                    .load(image.getUrl())
+                    .load(image)
                     .into(imageView, new com.squareup.picasso.Callback() {
                         @Override
                         public void onSuccess() {
@@ -196,5 +184,22 @@ public class DetailsActivity extends AppCompatActivity implements DownloadResult
             progressDialog.dismiss();
         }
         progressDialog = null;
+    }
+
+    @Override
+    public void onResponse(Call<Data> call, Response<Data> response) {
+        setEnabledDownloadAction(false);
+        int code = response.code();
+        if (code == 200) {
+            setProjectDetailsContent(response.body().data);
+        } else {
+            Toast.makeText(this, String.valueOf(code), Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    public void onFailure(Call<Data> call, Throwable t) {
+        setEnabledDownloadAction(false);
+        Toast.makeText(this, t.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
     }
 }

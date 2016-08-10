@@ -1,6 +1,7 @@
 package vesnell.pl.lsportfolio.ui;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -22,9 +23,10 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 import vesnell.pl.lsportfolio.R;
+import vesnell.pl.lsportfolio.api.LooksoftApi;
 import vesnell.pl.lsportfolio.api.LooksoftMainApi;
-import vesnell.pl.lsportfolio.model.Data;
-import vesnell.pl.lsportfolio.model.Project;
+import vesnell.pl.lsportfolio.model.main.Data;
+import vesnell.pl.lsportfolio.model.main.Project;
 
 public class AppsFragment extends Fragment implements Callback<Data> {
 
@@ -47,19 +49,6 @@ public class AppsFragment extends Fragment implements Callback<Data> {
         llm.setOrientation(LinearLayoutManager.VERTICAL);
         listView.setLayoutManager(llm);
 
-        /*listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                if (projects != null) {
-                    view.setBackgroundColor(ContextCompat.getColor(context, R.color.colorPrimary));
-                    Project project = projects.get(position);
-                    Intent i = new Intent(getActivity(), DetailsActivity.class);
-                    i.putExtra(Project.NAME, project);
-                    startActivity(i);
-                }
-            }
-        });*/
-
         swipeRefreshLayout.setOnRefreshListener(
                 new SwipeRefreshLayout.OnRefreshListener() {
                     @Override
@@ -72,6 +61,15 @@ public class AppsFragment extends Fragment implements Callback<Data> {
 
         adapter = new MyAdapter(getContext());
         listView.setAdapter(adapter);
+        adapter.setOnItemClickListenr(new MyAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(View v, int position) {
+                Project project = adapter.getProjects().get(position);
+                Intent i = new Intent(getActivity(), DetailsActivity.class);
+                i.putExtra(Project.NAME, project);
+                startActivity(i);
+            }
+        });
 
         startDownloadProjects();
         return v;
@@ -84,7 +82,7 @@ public class AppsFragment extends Fragment implements Callback<Data> {
                 .setDateFormat("yyyy-MM-dd HH:mm:ss")
                 .create();
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(LooksoftMainApi.ENDPOINT)
+                .baseUrl(LooksoftApi.ENDPOINT)
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .build();
 
@@ -128,5 +126,14 @@ public class AppsFragment extends Fragment implements Callback<Data> {
                 }
             }
         }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        if ((progressDialog != null) && progressDialog.isShowing()) {
+            progressDialog.dismiss();
+        }
+        progressDialog = null;
     }
 }

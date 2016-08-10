@@ -1,4 +1,4 @@
-package vesnell.pl.lsportfolio.model;
+package vesnell.pl.lsportfolio.model.main;
 
 /**
  * Created by Lenovo on 22.07.2016.

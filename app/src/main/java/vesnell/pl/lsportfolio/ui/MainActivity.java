@@ -16,7 +16,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import vesnell.pl.lsportfolio.R;
-import vesnell.pl.lsportfolio.service.DownloadService;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -29,7 +28,7 @@ public class MainActivity extends AppCompatActivity
     private FrameLayout fragContainer;
     private AppsFragment appsFragment;
     private ContactFragment contactFragment;
-    private DownloadService.DownloadType fragType = DownloadService.DownloadType.APPS;
+    private UIInterface fragType = UIInterface.APPS;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,10 +84,10 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.apps) {
-            fragType = DownloadService.DownloadType.APPS;
+            fragType = UIInterface.APPS;
             setViewApps();
         } else if (id == R.id.contact) {
-            fragType = DownloadService.DownloadType.DETAILS;
+            fragType = UIInterface.DETAILS;
             setViewContact();
         }
 
@@ -101,7 +100,7 @@ public class MainActivity extends AppCompatActivity
             if(savedInstanceState == null) {
                 setViewApps();
             } else {
-                DownloadService.DownloadType fragType = (DownloadService.DownloadType) savedInstanceState.getSerializable(FRAG_TYPE);
+                UIInterface fragType = (UIInterface) savedInstanceState.getSerializable(FRAG_TYPE);
                 switch (fragType) {
                     case APPS:
                         if (appsFragment != null) {
